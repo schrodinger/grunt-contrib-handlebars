@@ -108,10 +108,19 @@ module.exports = function(grunt) {
           }
         } else {
           filename = processName(filepath);
-          if (options.namespace !== false) {
-            templates.push(nsInfo.namespace+'['+JSON.stringify(filename)+'] = '+compiled+';');
+   
+          if (options.namespace !== false ) {
+              if (options.closure) {
+                  templates.push(options.namespace + '.' + filename + ' = ');
+                  templates.push(compiled);
+              } else {
+                  templates.push(nsInfo.namespace+'['+JSON.stringify(filename)+'] = '+compiled+';');
+              }
           } else {
-            templates.push(compiled);
+              templates.push(compiled);
+          }
+          if (options.closure) {
+              templates.push(';');
           }
         }
       });
@@ -121,18 +130,22 @@ module.exports = function(grunt) {
         grunt.log.warn('Destination not written because compiled files were empty.');
       } else {
         if (options.namespace !== false) {
-          output.unshift(nsInfo.declaration);
+            if (options.closure) {
+                output.unshift('goog.provide("' + options.namespace + '");');
+            } else {
+            
+                output.unshift(nsInfo.declaration);
 
-          if (options.node) {
-            output.unshift('Handlebars = glob.Handlebars || require(\'handlebars\');');
-            output.unshift('var glob = (\'undefined\' === typeof window) ? global : window,');
+                if (options.node) {
+                    output.unshift('Handlebars = glob.Handlebars || require(\'handlebars\');');
+                    output.unshift('var glob = (\'undefined\' === typeof window) ? global : window,');
 
-            var nodeExport = 'if (typeof exports === \'object\' && exports) {';
-            nodeExport += 'module.exports = ' + nsInfo.namespace + ';}';
-
-            output.push(nodeExport);
-          }
-
+                    var nodeExport = 'if (typeof exports === \'object\' && exports) {';
+                    nodeExport += 'module.exports = ' + nsInfo.namespace + ';}';
+                    
+                    output.push(nodeExport);
+                }
+            }
         }
 
         if (options.amd) {
@@ -141,10 +154,11 @@ module.exports = function(grunt) {
           if (options.namespace !== false) {
             // Namespace has not been explicitly set to false; the AMD
             // wrapper will return the object containing the template.
-            output.push("return "+nsInfo.namespace+";");
+              output.push("return "+nsInfo.namespace+";");
           }
-          output.push("});");
+            output.push("});");
         }
+
 
         grunt.file.write(f.dest, output.join(grunt.util.normalizelf(options.separator)));
         grunt.log.writeln('File "' + f.dest + '" created.');
