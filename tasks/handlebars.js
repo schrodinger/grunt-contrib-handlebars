@@ -111,8 +111,8 @@ module.exports = function(grunt) {
    
           if (options.namespace !== false ) {
               if (options.closure) {
-                  templates.push(options.namespace + '.' + filename + ' = ');
-                  templates.push(compiled);
+                  templates.push('/**\n * @param {' + options.namespace + '.' + filename  + '.Context} context\n * @param {' + options.namespace + '.'  + filename +  '.Options} options\n */');
+                  templates.push(options.namespace + '.' + filename + ' = ' + compiled);
               } else {
                   templates.push(nsInfo.namespace+'['+JSON.stringify(filename)+'] = '+compiled+';');
               }
@@ -131,7 +131,7 @@ module.exports = function(grunt) {
       } else {
         if (options.namespace !== false) {
             if (options.closure) {
-                output.unshift('goog.provide("' + options.namespace + '");');
+                 output.unshift('goog.provide("' + options.namespace + '");');
             } else {
             
                 output.unshift(nsInfo.declaration);
