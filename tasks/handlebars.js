@@ -111,7 +111,7 @@ module.exports = function(grunt) {
    
           if (options.namespace !== false ) {
               if (options.closure) {
-                  templates.push('/**\n * @param {' + options.namespace + '.' + filename  + '.Context} context\n * @param {' + options.namespace + '.'  + filename +  '.Options} options\n */');
+                  templates.push('/**\n * @param {' + options.namespace + '.' + filename  + '.Context} context\n * @param {' + options.namespace + '.'  + filename +  '.Options=} options\n */');
                   templates.push(options.namespace + '.' + filename + ' = ' + compiled);
               } else {
                   templates.push(nsInfo.namespace+'['+JSON.stringify(filename)+'] = '+compiled+';');
