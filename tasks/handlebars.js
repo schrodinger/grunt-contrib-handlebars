@@ -111,16 +111,15 @@ module.exports = function(grunt) {
    
           if (options.namespace !== false ) {
               if (options.closure) {
-                  templates.push('/**\n * @param {' + options.namespace + '.' + filename  + '.context} context\n * @param {' + options.namespace + '.' + filename +  '.options=} options\n */');
-                  templates.push(options.namespace + '.' + filename + ' = ' + compiled);
+                  templates.push('goog.provide("' + options.namespace + '.precompiled.' + filename + '");');
+                  templates.push('goog.require("' + options.namespace + '.params.' + filename  + 'Context");\ngoog.require("' + options.namespace + '.params.Options");');
+                  templates.push('/**\n * @param {' + options.namespace + '.params.' + filename  + 'Context} context\n * @param {' + options.namespace + '.params.Options=} options\n */');
+                  templates.push(options.namespace + '.precompiled.' + filename + ' = ' + compiled + ';');
               } else {
                   templates.push(nsInfo.namespace+'['+JSON.stringify(filename)+'] = '+compiled+';');
               }
           } else {
               templates.push(compiled);
-          }
-          if (options.closure) {
-              templates.push(';');
           }
         }
       });
@@ -132,7 +131,6 @@ module.exports = function(grunt) {
         if (options.namespace !== false) {
             if (options.closure) {
                  
-                 output.unshift('goog.provide("' + options.namespace + '");');
             } else {
             
                 output.unshift(nsInfo.declaration);
