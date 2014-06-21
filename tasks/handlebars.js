@@ -108,13 +108,11 @@ module.exports = function(grunt) {
           }
         } else {
           filename = processName(filepath);
-   
+
           if (options.namespace !== false ) {
               if (options.closure) {
-                  templates.push('goog.provide("' + options.namespace + '.precompiled.' + filename + '");');
-                  templates.push('goog.require("' + options.namespace + '.params.' + filename  + 'Context");\ngoog.require("' + options.namespace + '.params.Options");');
-                  templates.push('/**\n * @param {' + options.namespace + '.params.' + filename  + 'Context} context\n * @param {' + options.namespace + '.params.Options=} options\n */');
-                  templates.push(options.namespace + '.precompiled.' + filename + ' = ' + compiled + ';');
+                  templates.push('goog.provide("' + options.namespace + '.' + filename + '");');
+                  templates.push(options.namespace + '.' + filename + ' = ' + compiled + ';');
               } else {
                   templates.push(nsInfo.namespace+'['+JSON.stringify(filename)+'] = '+compiled+';');
               }
@@ -130,9 +128,9 @@ module.exports = function(grunt) {
       } else {
         if (options.namespace !== false) {
             if (options.closure) {
-                 
+
             } else {
-            
+
                 output.unshift(nsInfo.declaration);
 
                 if (options.node) {
@@ -141,7 +139,7 @@ module.exports = function(grunt) {
 
                     var nodeExport = 'if (typeof exports === \'object\' && exports) {';
                     nodeExport += 'module.exports = ' + nsInfo.namespace + ';}';
-                    
+
                     output.push(nodeExport);
                 }
             }
