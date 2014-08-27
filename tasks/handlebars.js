@@ -47,15 +47,15 @@ module.exports = function(grunt) {
   /**
    * Returns a goog.provide string based on the namespace and filename
    */
-  var getClosureProvide = function(clsName) {
-    return 'goog.provide("' + clsName + '");'
+  var getClosureProvide = function(fullNamespace) {
+    return 'goog.provide("' + fullNamespace + '");'
   };
 
   /**
    * Returns a string of a function defined in dot notation
    */
-  var getClosureFunction = function(clsName, compiled) {
-    return clsName + ' = ' + compiled + ';'
+  var getClosureFunction = function(fullNamespace, compiled) {
+    return fullNamespace + ' = ' + compiled + ';'
   };
 
   grunt.registerMultiTask('handlebars', 'Compile handlebars templates and partials.', function() {
@@ -111,7 +111,7 @@ module.exports = function(grunt) {
       .forEach(function(filepath) {
         var src = processContent(grunt.file.read(filepath));
         var Handlebars = require('handlebars');
-        var ast, compiled, filename, clsName;
+        var ast, compiled, filename, fullNamespace;
         try {
           // parse the handlebars template into it's AST
           ast = processAST(Handlebars.parse(src));
@@ -143,9 +143,9 @@ module.exports = function(grunt) {
           filename = processName(filepath);
           if (options.namespace !== false ) {
               if (options.closure) {
-                  clsName = options.namespace + '.' + filename;
-                  templates.push(getClosureProvide(clsName));
-                  templates.push(getClosureFunction(clsName, compiled));
+                  fullNamespace = options.namespace + '.' + filename;
+                  templates.push(getClosureProvide(fullNamespace));
+                  templates.push(getClosureFunction(fullNamespace, compiled));
               } else {
                   templates.push(nsInfo.namespace+'['+JSON.stringify(filename)+'] = '+compiled+';');
               }
