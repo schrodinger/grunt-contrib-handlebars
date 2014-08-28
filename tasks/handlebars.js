@@ -40,7 +40,9 @@ module.exports = function(grunt) {
       '/**',
       '* @fileoverview Precompiled handlebars templates for the app',
       '* @suppress {globalThis}',
-      '*/'
+      '*/',
+      '',
+      "goog.require('Handlebars');"
     ].join(grunt.util.linefeed);
   };
 
